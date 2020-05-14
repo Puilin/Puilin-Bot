@@ -13,7 +13,7 @@ import re
 
 app = commands.Bot(command_prefix='/')
 
-token = "Your token here"
+token = "Your token Here"
 
 tierScore = {
     'default' : 0,
@@ -89,6 +89,8 @@ async def on_message(message):
             await message.channel.send("나무를 %d번 캤습니다" %treeHit)
             sleep(1)
         await message.channel.send("나무가 쓰러집니다")
+    if message.content == "/패치노트":
+        await message.channel.send("https://github.com/Puilin/My-own-code/blob/master/%ED%8C%A8%EC%B9%98%EB%85%B8%ED%8A%B8.md")
     if message.content == "/DN":
         await message.channel.send("남만주")
     if message.content == '/도움말':
@@ -99,6 +101,7 @@ async def on_message(message):
 /도움말 : 도움말을 볼 수 있습니다.
 /동숲 : 너만 동숲이 없습니다.
 /롤전적 (닉네임) : (닉네임)의 롤 전적을 검색합니다. (op.gg)
+/패치노트 : 패치노트를 확인합니다.
 /뽑기 (숫자1) (숫자2) : (숫자1)과 (숫자2) 사이의 수를 랜덤으로 고릅니다.
 /청소 (숫자) : (숫자)만큼 지난 채팅을 삭제합니다.
 /""")
