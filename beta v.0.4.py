@@ -42,8 +42,6 @@ async def on_message(message):
     await app.process_commands(message)
     if message.author.bot:
         return None
-    if message.content == '/북':
-        await message.channel.send("따닥")
     if message.content == "/안녕":
         await message.channel.send("안녕하세요.")
     if message.content == "/발":
@@ -116,7 +114,6 @@ async def on_message(message):
 /나무 : 봇이 나무를 캐줍니다.
 /도움말 : 도움말을 볼 수 있습니다.
 /동숲 : 너만 동숲이 없습니다.
-/북 : 따닥
 /롤 (닉네임) : (닉네임)의 롤 전적을 검색합니다. (op.gg) [언랭 검색 안됨]
 /뽑기 (숫자1) (숫자2) : (숫자1)과 (숫자2) 사이의 수를 랜덤으로 고릅니다.
 /청소 (숫자) : (숫자)만큼 지난 채팅을 삭제합니다.""")
