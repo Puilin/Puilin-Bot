@@ -10,7 +10,7 @@ from time import sleep
 
 app = commands.Bot(command_prefix='/')
 
-token = "NjkyMDM3MDYxNDE0MzU1MDA0.XnosGA.BL_uBWubT1-HW0SaJwAuAuFNbus"
+token = "My Token"
 
 @app.command(pass_context=True)
 async def 뽑기(ctx, num1, num2):
