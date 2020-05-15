@@ -60,7 +60,7 @@ async def on_ready():
     print(app.user.name)
     print(app.user.id)
     print("==========")
-    game = discord.Game("퓨이린 봇 개발모드")
+    game = discord.Game("퓨이린 봇 가동")
     await app.change_presence(status=discord.Status.online, activity=game)
 
 #discord.Game : 게임하는중
