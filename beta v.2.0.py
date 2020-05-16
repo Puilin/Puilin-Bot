@@ -138,7 +138,7 @@ async def on_message(message):
         else:
             pass
     if message.content == "/패치노트":
-        await message.channel.send("https://github.com/Puilin/My-own-code/blob/master/%ED%8C%A8%EC%B9%98%EB%85%B8%ED%8A%B8.md")
+        await message.channel.send("https://github.com/Puilin/My-own-code/%ED%8C%A8%EC%B9%98%EB%85%B8%ED%8A%B8.md")
     if message.content == "/DN":
         await message.channel.send("남만주")
     if message.content == '/도움말':
