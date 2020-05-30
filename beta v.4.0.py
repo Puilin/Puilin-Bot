@@ -393,26 +393,4 @@ async def on_voice_state_update(member, before, after):
             embed.add_field(name = "시간", value = str(now), inline=False)
             await member.guild.system_channel.send(embed=embed)
 
-#@app.event
-#async def on_voice_state_update(member, before, after):
- #   if(os.path.exists("LogCH/" + str(member.guild.id) + ".txt") != True):
-  #      return
-    
-    
-   # file = open("LogCH/" + str(member.guild.id) + ".txt", "r")
- #   path = file.read()
-  #  file.close()
-   # ch = member.guild.get_channel(int(path))
-   # if(before.channel == None):
-    #    now = datetime.datetime.now()
-     #   embed = discord.Embed(title = "보이스 참여", description = "<#" + str(after.channel.id)+">채널에 "+str(member.name)+'님이 참여하셨습니다.', color = 0x00ff00)
-      #  embed.add_field(name = "id", value = str(member.id), inline=False)
-       # embed.add_field(name = "시간", value = str(now), inline=False)
-        #await ch.send(embed=embed)
-  #  else:
-   #     now = datetime.datetime.now()
-    #    embed = discord.Embed(title = "보이스 종료", description = "<#" + str(before.channel.id)+">채널에서 "+str(member.name)+'님이 떠나셨습니다.', color = 0x00ff00)
-     #   embed.add_field(name = "id", value = str(member.id), inline=False)
-     #   embed.add_field(name = "시간", value = str(now), inline=False)
-     #   await ch.send(embed=embed)
 app.run(token)
