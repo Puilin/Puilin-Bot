@@ -10,4 +10,5 @@
 * [beta v.0.4](https://github.com/Puilin/My-own-code/blob/master/beta%20v.0.4.py)
 
 ## 학업
-추가 예정
+1. [BOJ #1193](https://github.com/Puilin/My-own-code/blob/master/BOJ/1193.py)
+    * 해결할 것 : 시간초과 (코드는 작동함)
