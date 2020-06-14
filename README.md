@@ -12,3 +12,5 @@
 ## 학업
 1. [BOJ #1193](https://github.com/Puilin/My-own-code/blob/master/BOJ/1193.py)
     * 해결할 것 : 시간초과 (코드는 작동함)
+2. [BOJ #1003](https://github.com/Puilin/My-own-code/blob/master/BOJ/1003.py)
+    * 해결할 것 : 시간초과 (코드는 작동함)
