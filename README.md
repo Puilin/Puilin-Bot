@@ -14,3 +14,5 @@
     * 해결할 것 : 시간초과 (코드는 작동함)
 2. [BOJ #1003](https://github.com/Puilin/My-own-code/blob/master/BOJ/1003.py)
     * 해결할 것 : 시간초과 (코드는 작동함)
+3. [BOJ #9461](https://github.com/Puilin/My-own-code/blob/master/BOJ/9461.py)
+    * 해결할 것 : 함수는 작동하지만 채점에서 틀렸다고 뜸
