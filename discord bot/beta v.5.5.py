@@ -562,15 +562,15 @@ async def on_voice_state_update(member, before, after):
             embed = discord.Embed(title = "음성 채널 참여", description = "<#" + str(after.channel.id)+"> 채널에 "+str(member.name)+' 님이 참여하셨습니다.', color = 0x00ff00)
             embed.add_field(name = "시간", value = str(now), inline=False)
             await member.guild.system_channel.send(embed=embed)
-            if not member.name in daily: #출석체크 명단에 있는지 체크 없으면 출첵
-                daily.append(member.name)
-                await member.guild.system_channel.send(str(member.name) + " 님 "\
-                    + str(now[:10]) + " :white_check_mark: 출석체크 완료")
             try:
                 if int(timestamp[-1]) - int(timestamp[-2]) != 0: # 날짜가 바뀌면 명단 초기화
                     daily.clear()
             except IndexError:
                 pass
+            if not member.name in daily: #출석체크 명단에 있는지 체크 없으면 출첵
+                daily.append(member.name)
+                await member.guild.system_channel.send(str(member.name) + " 님 "\
+                    + str(now[:10]) + " :white_check_mark: 출석체크 완료")
 
 global daily
 daily = []
