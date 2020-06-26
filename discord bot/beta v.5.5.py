@@ -382,6 +382,11 @@ async def on_message(message):
 /패치노트 : 패치노트를 확인합니다.
 /뽑기 (숫자1) (숫자2) : (숫자1)과 (숫자2) 사이의 수를 랜덤으로 고릅니다.
 /청소 (숫자) : (숫자)만큼 지난 채팅을 삭제합니다.""")
+    if message.content in ["/출첵", "/출석체크"]:
+        embed = discord.Embed(title="출석체크 현황", description="", color=0xD1B2FF)
+        embed.add_field(name = "출석인원", value = "%d명" %len(daily), inline=False)
+        embed.add_field(name = "출석자 목록", value = "%s" %daily, inline=False)
+        await message.channel.send(embed=embed)
 
 ## op.gg crawling code written by Hoplin
 
