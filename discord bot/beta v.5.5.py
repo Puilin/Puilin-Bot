@@ -17,7 +17,7 @@ from cardgame import *
 
 app = commands.Bot(command_prefix='/')
 
-token = "Your Token Here"
+token = "Your token Here"
 
 tierScore = {
     'default' : 0,
@@ -371,17 +371,20 @@ async def on_message(message):
         await message.channel.send("https://github.com/Puilin/My-own-code/blob/master/%ED%8C%A8%EC%B9%98%EB%85%B8%ED%8A%B8.md")
     if message.content == "/DN":
         await message.channel.send("남만주")
-    if message.content == '/도움말':
-        await message.channel.send("""/안녕 : 퓨이린 봇이 인사를 합니다
-/발 : 금지된 명령어입니다.
-/DN : 금지된 명령어입니다2
-/나무 : 봇이 나무를 캐줍니다.
-/도움말 : 도움말을 볼 수 있습니다.
-/동숲 : 너만 동숲이 없습니다.
-/롤전적 (닉네임) : (닉네임)의 롤 전적을 검색합니다. (op.gg)
-/패치노트 : 패치노트를 확인합니다.
-/뽑기 (숫자1) (숫자2) : (숫자1)과 (숫자2) 사이의 수를 랜덤으로 고릅니다.
-/청소 (숫자) : (숫자)만큼 지난 채팅을 삭제합니다.""")
+    if message.content in ['/도움말', '/명령어']:
+        embed = discord.Embed(title="명령어 목록", description="", color=0xFFA7A7)
+        embed.add_field(name = "/안녕", value = "퓨이린 봇이 인사를 합니다.", inline=False)
+        embed.add_field(name = "/발", value = "금지된 명령어입니다.", inline=False)
+        embed.add_field(name = "/DN", value = "금지된 명령어입니다2", inline=False)
+        embed.add_field(name = "/나무", value = "봇이 나무를 캐줍니다.", inline=False)
+        embed.add_field(name = "/도움말 or /명령어", value = "명령어 목록을 볼 수 있습니다.", inline=False)
+        embed.add_field(name = "/동숲", value = "너만 동숲이 없습니다.", inline=False)
+        embed.add_field(name = "/롤전적 (닉네임)", value = "(닉네임)의 롤 전적을 검색합니다.", inline=False)
+        embed.add_field(name = "/패치노트", value = "패치노트를 확인합니다.", inline=False)
+        embed.add_field(name = "/뽑기 (숫자1) (숫자2)", value = "(숫자1)과 (숫자2) 사이의 수를 랜덤으로 고릅니다.", inline=False)
+        embed.add_field(name = "/청소 (숫자)", value = "(숫자)만큼 지난 채팅을 삭제합니다.", inline=False)
+        embed.add_field(name = "/출첵 or /출석체크", value = "출석체크 현황을 확인합니다.", inline=False)
+        await message.channel.send(embed=embed)
     if message.content in ["/출첵", "/출석체크"]:
         embed = discord.Embed(title="출석체크 현황", description="", color=0xD1B2FF)
         embed.add_field(name = "출석인원", value = "%d명" %len(daily), inline=False)
@@ -554,7 +557,7 @@ async def on_message(message):
 @app.event
 async def on_voice_state_update(member, before, after):
     if before.channel is None and after.channel is not None:
-        if after.channel.name == '일반':
+        if after.channel.name == '일반': # 채널을 이렇게 설정할 수 있다 (없어도 됨)
             fmt = "%Y-%m-%d %H:%M:%S %Z%z"
             KST = datetime.now(timezone('Asia/Seoul'))
             now = KST.strftime(fmt)
