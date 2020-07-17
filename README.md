@@ -1,7 +1,7 @@
 # My-own-code
 
 ## 퓨이린 봇
-[초대 링크](https://discord.com/api/oauth2/authorize?client_id=692037061414355004&permissions=8&scope=bot)
+[초대 링크](https://discord.com/api/oauth2/authorize?client_id=692037061414355004&permissions=33586240&scope=bot)
 ## 디스코드 봇 개발일지
 [패치노트](https://github.com/Puilin/My-own-code/blob/master/패치노트.md)
 ### 버전 릴리즈
