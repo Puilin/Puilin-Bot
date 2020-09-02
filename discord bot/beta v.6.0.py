@@ -374,7 +374,6 @@ async def on_message(message):
         embed.add_field(name = "/DN", value = "금지된 명령어입니다2", inline=False)
         embed.add_field(name = "/나무", value = "봇이 나무를 캐줍니다.", inline=False)
         embed.add_field(name = "/도움말 or /명령어", value = "명령어 목록을 볼 수 있습니다.", inline=False)
-        embed.add_field(name = "/동숲", value = "너만 동숲이 없습니다.", inline=False)
         embed.add_field(name = "/롤전적 (닉네임)", value = "(닉네임)의 롤 전적을 검색합니다.", inline=False)
         embed.add_field(name = "/패치노트", value = "패치노트를 확인합니다.", inline=False)
         embed.add_field(name = "/뽑기 (숫자1) (숫자2)", value = "(숫자1)과 (숫자2) 사이의 수를 랜덤으로 고릅니다.", inline=False)
