@@ -6,6 +6,7 @@
 ## 디스코드 봇 개발일지
 [패치노트](https://github.com/Puilin/My-own-code/blob/master/패치노트.md)
 ### 버전 릴리즈
+* [beta v.7.5](https://github.com/Puilin/Puilin-Bot/blob/master/discord%20bot/beta%20v.7.5.py)
 * [beta v.7.0](https://github.com/Puilin/Puilin-Bot/blob/master/discord%20bot/beta%20v.7.0.py)
 * [beta v.6.5](https://github.com/Puilin/Puilin-Bot/blob/master/discord%20bot/beta%20v.6.5.py)
 * [beta v.6.0](https://github.com/Puilin/Puilin-Bot/blob/master/discord%20bot/beta%20v.6.0.py)
