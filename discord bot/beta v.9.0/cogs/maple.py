@@ -40,18 +40,18 @@ class Maple(commands.Cog):
                     reaction, user = await self.bot.wait_for("reaction_add", timeout=10, check=check_m2)
                     if str(reaction.emoji) == '🕐':
                         embed = discord.Embed()
-                        embed.set_image(url='https://postfiles.pstatic.net/MjAyMDA4MjdfMTI3/MDAxNTk4NTEyNDgxMjMw.a98DwNNZKZI3ickoniMc2Gg7ydi22-gTbO95ZYthWUcg.5Rmy6QtesPH9eX559vqm1qY2fz233YLFp2RMiM26koUg.PNG.khs20010327/1598512478511.png?type=w773')
-                        embed.set_footer(text='출처 : https://blog.naver.com/khs20010327/222072627480')
+                        embed.set_image(url='https://blogfiles.pstatic.net/MjAyMTAxMjRfMTEg/MDAxNjExNDY5MzQzMTkx.C3QlTLCdH3f5KP_VuT4ShyuUceYj25pnYn1-K9B7EhUg.rfTfooOTVD69l_GN-M7GjeFcwyKVWbpwkyBfm_0y4Tsg.PNG.suryblue/1.PNG?type=w1')
+                        embed.set_footer(text='출처 : https://godgle.tistory.com')
                         await ctx.send(embed=embed)
                     elif str(reaction.emoji) == '🕑':
                         embed = discord.Embed()
-                        embed.set_image(url='https://postfiles.pstatic.net/MjAyMDA4MjdfNDAg/MDAxNTk4NTEyNDgzNDgy.sMaxGixBHfX6MLc8fh1zrzTDAe7sXNfk1E8_QBVwXrMg.kcSI6R_ePzj6NcoMLXmNkGdrSSpodhcZex14a_t3yLAg.PNG.khs20010327/1598512480239.png?type=w773')
-                        embed.set_footer(text='출처 : https://blog.naver.com/khs20010327/222072627480')
+                        embed.set_image(url='https://blogfiles.pstatic.net/MjAyMTAxMjRfMTEg/MDAxNjExNDY5MzQzNTMw.BHsk2vNgQFScFnb14d6ptphjrlhTQbOE-UzJsvCr4N4g.FAKheOcWlKjiGSjME6t1c4vI5oyamYilfojWsooJMuMg.PNG.suryblue/2.PNG?type=w1')
+                        embed.set_footer(text='출처 : https://godgle.tistory.com/')
                         await ctx.send(embed=embed)
                     elif str(reaction.emoji) == '🕒':
                         embed = discord.Embed()
-                        embed.set_image(url='https://postfiles.pstatic.net/MjAyMDA4MjdfMTEx/MDAxNTk4NTEyNDg4MzA0.n5owscR_Qu9axvL8s8BRcJLAmAcZIteKKo5OZjgk72Ug.faaU0KcLHHBQr6USShNYFgRXu8V5zxRO6DHAe9fU0xMg.PNG.khs20010327/1598512483475.png?type=w773')
-                        embed.set_footer(text='출처 : https://blog.naver.com/khs20010327/222072627480')
+                        embed.set_image(url='https://blogfiles.pstatic.net/MjAyMTAxMjRfOTIg/MDAxNjExNDY5MzQzNzU3.ESKfnUxxOK24xNg8HtT-nMOXHMjsJOg42RGLOaHAjL8g.OqPRpFhmSHpTzk9i3mvo512JlIr6MMoC0oO4Gf_EMxgg.PNG.suryblue/3.PNG?type=w1')
+                        embed.set_footer(text='출처 : https://godgle.tistory.com/')
                         await ctx.send(embed=embed)
                 except asyncio.TimeoutError:
                     await ctx.send("입력 시간 초과")
