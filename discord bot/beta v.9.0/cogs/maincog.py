@@ -96,6 +96,7 @@ class MainCog(commands.Cog):
             embed.add_field(name = "/롤전적 (닉네임)", value = "(닉네임)의 롤 전적을 검색합니다.", inline=False)
             embed.add_field(name = "/메이플", value = "메이플 편의기능을 제공합니다.", inline=False)
             embed.add_field(name = "/랜덤게임", value = "봇이 제공하는 게임 중 하나를 랜덤으로 불러옵니다.", inline=False)
+            embed.add_field(name = "/배라", value = "배스킨라빈스 31 게임을 시작합니다. (채널 관리 & 역할 관리 권한 필요)", inline=False)
             await message.channel.send(embed=embed)
         if message.content in ["/출첵", "/출석체크"]:
             embed = discord.Embed(title="출석체크 현황", description="", color=0xD1B2FF)
