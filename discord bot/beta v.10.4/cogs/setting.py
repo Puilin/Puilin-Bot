@@ -43,7 +43,7 @@ class Setting(commands.Cog):
                             reaction, user = await self.bot.wait_for('reaction_add', timeout=10.0, check=check2)
                             if str(reaction.emoji) == '✔':
                                 f2 = open("toggling.txt", 'w')
-                                str_list[idx] = lst1[0] + "=" + "false"
+                                str_list[idx] = lst1[0] + "=" + "false" + '\n'
                                 for j in str_list:
                                     f2.write(j)
                                 f2.close()
@@ -65,7 +65,7 @@ class Setting(commands.Cog):
                             reaction, user = await self.bot.wait_for('reaction_add', timeout=10.0, check=check2)
                             if str(reaction.emoji) == '✔':
                                 f2 = open("toggling.txt", 'w')
-                                str_list[idx] = lst1[0] + "=" + "true"
+                                str_list[idx] = lst1[0] + "=" + "true" + "\n"
                                 for j in str_list:
                                     f2.write(j)
                                 f2.close()
@@ -79,7 +79,7 @@ class Setting(commands.Cog):
                     guild_list = self.bot.guilds
                     f = open("toggling.txt", 'w')
                     for i in guild_list:
-                        f.write(str(i.id) + "=true")
+                        f.write(str(i.id) + "=true" + "\n")
                     f.close()
                     Setting.toggle(self, ctx)
             else:
