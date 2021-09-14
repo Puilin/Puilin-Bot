@@ -4,7 +4,7 @@ import discord
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix='/', intents=intents)
 
-token = "Your token here"
+token = "Your token here "
 
 bot.load_extension("cogs.maincog")
 bot.load_extension("cogs.randomgame")
