@@ -15,9 +15,11 @@ class Maple(commands.Cog):
         embed.add_field(name="추옵  (\u2694)" ,value="무기의 추가옵션을 봅니다.", inline=False)
         embed.add_field(name="코강  (💎)" ,value="전직업 코어강화 정리", inline=False)
         embed.add_field(name="심볼  (❄)" ,value="심볼 강화 비용 계산", inline=False)
+        embed.add_field(name="계산기  (🧮)" ,value="각종 계산 기능", inline=False)
+        
         message = await ctx.send(embed=embed)
 
-        for i in ["🎲", "\u2694", "💎", "❄"]:
+        for i in ["🎲", "\u2694", "💎", "❄", "🧮"]:
             await message.add_reaction(i)
 
         def check_m1(reaction, user):
@@ -254,8 +256,39 @@ class Maple(commands.Cog):
                             await ctx.send("입력 시간 초과")
                 except asyncio.TimeoutError:
                     await ctx.send("입력 시간 초과")
-                            
-                        
+            elif str(reaction.emoji) == '🧮':
+                embed = discord.Embed(title="계산 기능", description="", color=0xFAE0D4)
+                embed.add_field(name="보스 방무 딜 계산  (🕐)" ,value="보스에게 들어가는 실제 데미지를 계산합니다.", inline=False)
+                message = await ctx.send(embed=embed)
+                for i in ['🕐']:
+                    await message.add_reaction(i)
+                def check_m6(reaction, user):
+                    return user == ctx.author
+                try:
+                    reaction, user = await self.bot.wait_for("reaction_add", timeout=10, check=check_m6)
+                    if str(reaction.emoji) == '🕐':
+                        await ctx.send("보스의 방어율을 입력해주세요. (0 이상)")
+                        def check_m7(message):
+                            return message.author == ctx.author and message.content.isdigit() and int(message.content) >= 0
+                        try:
+                            message = await self.bot.wait_for("message", timeout=10, check=check_m7)
+                            boss = int(message.content)
+                            await ctx.send("자신의 방어 무시율을 입력해주세요. (0 이상, 소수점 아래 2자리까지)")
+                            def check_m8(message):
+                                return message.author == ctx.author and float(message.content) >= 0
+                            try:
+                                message = await self.bot.wait_for("message", timeout=10, check=check_m8)
+                                ignore = float(message.content)
+                                result = 100 - (boss * (1.0 - ignore * 0.01))
+                                await ctx.send("해당 보스에게 " + str(round(result, 2)) + " % 만큼 딜이 들어갑니다.")
+                            except ValueError:
+                                await ctx.send("숫자를 입력해주세요")
+                            except asyncio.TimeoutError:
+                                await ctx.send("입력 시간 초과")
+                        except asyncio.TimeoutError:
+                            await ctx.send("입력 시간 초과")
+                except asyncio.TimeoutError:
+                    await ctx.send("입력 시간 초과")
                 
         except asyncio.TimeoutError:
             await ctx.send("입력 시간 초과")
