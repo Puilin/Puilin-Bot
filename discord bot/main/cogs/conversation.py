@@ -25,7 +25,7 @@ class Conversation(commands.Cog):
     @commands.command(name="배워", pass_context=True)
     async def conv_study(self, ctx, *args):
         if ctx.channel.name == '대화':
-            f = open('data.csv','a', newline='')
+            f = open('data.csv','a', newline='', encoding='utf-8')
             wr = csv.writer(f)
             str1 = str(' '.join(args))
             lst1 = str1.split(";")
@@ -45,9 +45,9 @@ class Conversation(commands.Cog):
 
         if message.author.bot:
             return None
-        if not message.content.startswith("/배워"):
+        if message.channel.name == "대화" and not message.content.startswith("/배워"):
             q = message.content
-            csv = pd.read_csv('data.csv', names=['Q','A','server_id'], encoding='CP949')
+            csv = pd.read_csv('data.csv', names=['Q','A','server_id'], encoding='utf-8')
             find_row = csv.loc[csv['Q'] == q]
             try:
                 find_row = find_row.sample(n=1)
