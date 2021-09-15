@@ -29,9 +29,12 @@ class Conversation(commands.Cog):
             wr = csv.writer(f)
             str1 = str(' '.join(args))
             lst1 = str1.split(";")
-            wr.writerow([lst1[0], lst1[1]])
-            f.close()
-            await ctx.send("새로운 말을 배웠어요!")
+            try:
+                wr.writerow([lst1[0], lst1[1], ctx.guild.id])
+                f.close()
+                await ctx.send("새로운 말을 배웠어요!")
+            except IndexError:
+                await ctx.send("대답도 입력해주세요! 질문과 대답은 ;로 구분할 수 있어요")
         else:
             await ctx.send("대화 채널에서 사용해주세요")
     
@@ -43,7 +46,7 @@ class Conversation(commands.Cog):
             return None
         if not message.content.startswith("/배워"):
             q = message.content
-            csv = pd.read_csv('data.csv', names=['Q','A'], encoding='CP949')
+            csv = pd.read_csv('data.csv', names=['Q','A','server_id'], encoding='CP949')
             find_row = csv.loc[csv['Q'] == q]
             try:
                 find_row = find_row.sample(n=1)
