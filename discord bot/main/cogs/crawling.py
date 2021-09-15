@@ -377,14 +377,14 @@ class Crawling(commands.Cog):
                 txt += learn[i]
             txt.strip()
             enc_txt = urllib.parse.quote(txt)
-            url = "https://www.google.com/search?q=" + enc_txt + "&source=lnms&tbm=isch"
+            url = "https://search.naver.com/search.naver?where=image&sm=tab_jum&query=" + enc_txt
             hdr = {'User-Agent':'Mozilla/5.0'}
             req = Request(url, headers=hdr)
             html = urllib.request.urlopen(req)
             soup = BeautifulSoup(html,'html.parser')
-            images = soup.find_all('img')
+            images = soup.find_all("img")
             rand_num = random.randrange(1, len(images))
-            image = images[rand_num]['src']
+            image = images[rand_num]['src'][:-12]
             embed = discord.Embed(colour=0xFAE0D4)
             embed.set_image(url=image)
             await message.channel.send(embed=embed)
