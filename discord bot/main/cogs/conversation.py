@@ -35,6 +35,7 @@ class Conversation(commands.Cog):
                 await ctx.send("새로운 말을 배웠어요!")
             except IndexError:
                 await ctx.send("대답도 입력해주세요! 질문과 대답은 ;로 구분할 수 있어요")
+                f.close()
         else:
             await ctx.send("대화 채널에서 사용해주세요")
     
