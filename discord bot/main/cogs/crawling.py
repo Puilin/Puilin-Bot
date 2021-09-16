@@ -383,8 +383,18 @@ class Crawling(commands.Cog):
             html = urllib.request.urlopen(req)
             soup = BeautifulSoup(html,'html.parser')
             images = soup.find_all("img")
-            rand_num = random.randrange(1, len(images))
-            image = images[rand_num]['src'][:-12]
+            try:
+                rand_num = random.randrange(1, len(images))
+            except ValueError:
+                await message.channel.send("변태...")
+                return
+            image = images[rand_num]['src']
+            obj = re.findall('&type=.*', image)
+            try:
+                image = image.replace(obj[0], "")
+            except IndexError:
+                await message.channel.send("지원하지 않는 사진이거나 사진이 없어요..")
+                return
             embed = discord.Embed(colour=0xFAE0D4)
             embed.set_image(url=image)
             await message.channel.send(embed=embed)

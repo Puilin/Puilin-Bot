@@ -69,7 +69,10 @@ class MainCog(commands.Cog):
 
     @commands.command(name="청소", pass_context=True)
     async def _clear(self, ctx, *, amount=5):
-        await ctx.channel.purge(limit=amount)
+        try:
+            await ctx.channel.purge(limit=amount)
+        except discord.Forbidden:
+            await ctx.send("권한이 없네요..")
 
 
     @commands.Cog.listener()
