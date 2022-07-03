@@ -1,6 +1,6 @@
 # Puilin-Bot
 [퓨이린 봇 소개 사이트](https://puilinbot.herokuapp.com/)를 오픈했습니다.<br>
-discord.py 의 개발 중단에 따라 discord.js로 코드를 이전할 계획입니다. 따라서 해당 repository는 더 이상 개발 예정에 있지 않습니다.
+
 ## 퓨이린 봇
 * [초대 링크 (invitation link)](https://discord.com/api/oauth2/authorize?client_id=692037061414355004&permissions=305293392&scope=bot)
 * 명령어 목록은 봇 명령어 `/명령어`, `/도움말` 참고
