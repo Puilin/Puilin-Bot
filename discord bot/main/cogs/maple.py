@@ -258,7 +258,8 @@ class Maple(commands.Cog):
                     await ctx.send("입력 시간 초과")
             elif str(reaction.emoji) == '🧮':
                 embed = discord.Embed(title="계산 기능", description="", color=0xFAE0D4)
-                embed.add_field(name="보스 방무 딜 계산  (🕐)" ,value="보스에게 들어가는 실제 데미지를 계산합니다.", inline=False)
+                embed.add_field(name="보스 방무 딜 계산  (🛡️)" ,value="보스에게 들어가는 실제 데미지를 계산합니다.", inline=False)
+                embed.add_field(name="극성비 경험치 계산  (🧪)" ,value="극성비 사용 후 예상 레벨을 계산합니다", inline=False)
                 message = await ctx.send(embed=embed)
                 for i in ['🕐']:
                     await message.add_reaction(i)
@@ -287,9 +288,147 @@ class Maple(commands.Cog):
                                 await ctx.send("입력 시간 초과")
                         except asyncio.TimeoutError:
                             await ctx.send("입력 시간 초과")
+                    elif str(reaction.emoji) == '🧪':
+                        await ctx.send("레벨과 경험치 비율(%), 극성비 개수를 입력해주세요. (띄어쓰기로 구분)\nex) 261 10.597 2")
+                        def check_m9(message):
+                            def isfloat(num):
+                                try:
+                                    float(num)
+                                    return True
+                                except ValueError:
+                                    return False
+                            parsed = message.content.split()
+                            return message.author == ctx.author and len(parsed) >= 2 and parsed[0].isdigit() and isfloat(parsed[1])
+                        try:
+                            message = await self.bot.wait_for("message", timeout=15, check=check_m9)
+                            parsed = message.content.split()
+                            gsb_count = 0
+                            if len(parsed) == 2:
+                                gsb_count = 1
+                            else:
+                                if int(parsed[2]) > 100:
+                                    await ctx.send("최대 100개의 극성비만 계산할 수 있습니다.")
+                                    return
+                                gsb_count = int(parsed[2])
+                            if int(parsed[0]) < 200:
+                                await ctx.send("극한 성장의 비약은 200레벨 이상의 캐릭터만 사용할 수 있습니다.")
+                                return
+                            if int(parsed[0]) >= 300:
+                                embed = discord.Embed(title="극성비", description="", color=0xCBDD61)
+                                embed.add_field(name="예상 레벨" ,value="Lv.300 -> Lv.300", inline=False)
+                                embed.add_field(name="예상 경험치량" ,value="0.000 % -> 0.000 %", inline=False)
+                                await ctx.send(embed=embed)
+                            df = pd.read_csv('./exp.csv', names = ['lv', 'exp', 'cum'])
+                            lv = int(parsed[0])
+                            find_row = df.loc[df['lv'] == int(parsed[0])]
+                            gsb = 0
+                            req_exp = int(list(find_row['exp'])[0]) # 경험치 요구량
+                            cur_exp = req_exp * (float(parsed[1]) / 100.0) # 현재 경험치
+                            ratio = 0.0
+                            predict_exp = 0
+                            for _ in range(gsb_count):
+                                if lv < 250:
+                                    gsb = req_exp
+                                else:
+                                    gsb = 627637515116
+                                predict_exp = cur_exp + gsb
+                                if (predict_exp > req_exp):
+                                    lv += 1
+                                    find_row = df.loc[df['lv'] == lv]
+                                    cur_exp = predict_exp - req_exp
+                                else:
+                                    cur_exp = predict_exp
+                                try:
+                                    req_exp = int(list(find_row['exp'])[0])
+                                except IndexError:
+                                    embed = discord.Embed(title="극성비", description="", color=0xCBDD61)
+                                    embed.add_field(name="예상 레벨" ,value="Lv.{} -> Lv.300".format(parsed[0]), inline=False)
+                                    embed.add_field(name="예상 경험치량" ,value="{} % -> 0.000 %".format(parsed[1]), inline=False)
+                                    await ctx.send(embed=embed)
+                                    return None
+                                ratio = cur_exp / req_exp * 100.0
+                            if ratio == 100.0:
+                                lv += 1
+                                ratio = 0.0
+                            embed = discord.Embed(title="극성비", description="", color=0xCBDD61)
+                            embed.add_field(name="예상 레벨" ,value="Lv.{} -> Lv.{}".format(parsed[0], lv), inline=False)
+                            embed.add_field(name="예상 경험치량" ,value="{} % -> {} %".format(parsed[1], round(ratio, 3)), inline=False)
+                            await ctx.send(embed=embed)
+                        except asyncio.TimeoutError:
+                            await ctx.send("입력 시간 초과")
                 except asyncio.TimeoutError:
                     await ctx.send("입력 시간 초과")
                 
+        except asyncio.TimeoutError:
+            await ctx.send("입력 시간 초과")
+
+    @commands.command(name="극성비", pass_context=True)
+    async def gsb(self, ctx):
+        await ctx.send("레벨과 경험치 비율(%), 극성비 개수를 입력해주세요. (띄어쓰기로 구분)\nex) 261 10.597 2")
+        def check_m10(message):
+            def isfloat(num):
+                try:
+                    float(num)
+                    return True
+                except ValueError:
+                    return False
+            parsed = message.content.split()
+            return message.author == ctx.author and len(parsed) >= 2 and parsed[0].isdigit() and isfloat(parsed[1])
+        try:
+            message = await self.bot.wait_for("message", timeout=15, check=check_m10)
+            parsed = message.content.split()
+            gsb_count = 0
+            if len(parsed) == 2:
+                gsb_count = 1
+            else:
+                if int(parsed[2]) > 100:
+                    await ctx.send("최대 100개의 극성비만 계산할 수 있습니다.")
+                    return
+                gsb_count = int(parsed[2])
+            if int(parsed[0]) < 200:
+                await ctx.send("극한 성장의 비약은 200레벨 이상의 캐릭터만 사용할 수 있습니다.")
+                return
+            if int(parsed[0]) >= 300:
+                embed = discord.Embed(title="극성비", description="", color=0xCBDD61)
+                embed.add_field(name="예상 레벨" ,value="Lv.300 -> Lv.300", inline=False)
+                embed.add_field(name="예상 경험치량" ,value="0.000 % -> 0.000 %", inline=False)
+                await ctx.send(embed=embed)
+            df = pd.read_csv('./exp.csv', names = ['lv', 'exp', 'cum'])
+            lv = int(parsed[0])
+            find_row = df.loc[df['lv'] == int(parsed[0])]
+            gsb = 0
+            req_exp = int(list(find_row['exp'])[0]) # 경험치 요구량
+            cur_exp = req_exp * (float(parsed[1]) / 100.0) # 현재 경험치
+            ratio = 0.0
+            predict_exp = 0
+            for _ in range(gsb_count):
+                if lv < 250:
+                    gsb = req_exp
+                else:
+                    gsb = 627637515116
+                predict_exp = cur_exp + gsb
+                if (predict_exp > req_exp):
+                    lv += 1
+                    find_row = df.loc[df['lv'] == lv]
+                    cur_exp = predict_exp - req_exp
+                else:
+                    cur_exp = predict_exp
+                try:
+                    req_exp = int(list(find_row['exp'])[0])
+                except IndexError:
+                    embed = discord.Embed(title="극성비", description="", color=0xCBDD61)
+                    embed.add_field(name="예상 레벨" ,value="Lv.{} -> Lv.300".format(parsed[0]), inline=False)
+                    embed.add_field(name="예상 경험치량" ,value="{} % -> 0.000 %".format(parsed[1]), inline=False)
+                    await ctx.send(embed=embed)
+                    return None
+                ratio = cur_exp / req_exp * 100.0
+            if ratio == 100.0:
+                lv += 1
+                ratio = 0.0
+            embed = discord.Embed(title="극성비", description="", color=0xCBDD61)
+            embed.add_field(name="예상 레벨" ,value="Lv.{} -> Lv.{}".format(parsed[0], lv), inline=False)
+            embed.add_field(name="예상 경험치량" ,value="{} % -> {} %".format(parsed[1], round(ratio, 3)), inline=False)
+            await ctx.send(embed=embed)
         except asyncio.TimeoutError:
             await ctx.send("입력 시간 초과")
 
