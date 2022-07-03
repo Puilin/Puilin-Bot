@@ -12,7 +12,6 @@ bot.load_extension("cogs.crawling")
 bot.load_extension("cogs.maple")
 bot.load_extension("cogs.br31")
 bot.load_extension("cogs.inchant")
-bot.load_extension("cogs.music")
 bot.load_extension("cogs.setting")
 bot.load_extension("cogs.conversation")
 
