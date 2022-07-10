@@ -1,29 +1,43 @@
 from discord.ext import commands
 import discord
-
-intents = discord.Intents.all()
-bot = commands.Bot(command_prefix='/', intents=intents)
+import asyncio
 
 token = "Your token here"
 
-bot.load_extension("cogs.maincog")
-bot.load_extension("cogs.randomgame")
-bot.load_extension("cogs.crawling")
-bot.load_extension("cogs.maple")
-bot.load_extension("cogs.br31")
-bot.load_extension("cogs.inchant")
-bot.load_extension("cogs.setting")
-bot.load_extension("cogs.conversation")
+class PuilinBot(commands.Bot):
+    def __init__(self):
+        super().__init__(
+            command_prefix='/',
+            intents=discord.Intents.all(),
+            sync_command=True,
+            application_id=710842722046574603
+        )
+        self.initial_extension = [
+            "cogs.maincog",
+            "cogs.randomgame",
+            "cogs.crawling",
+            "cogs.maple",
+            "cogs.br31",
+            "cogs.inchant",
+            "cogs.setting",
+            "cogs.conversation"
+        ]
+    
+    async def setup_hook(self):
+        for ext in self.initial_extension:
+            await self.load_extension(ext)
+        await bot.tree.sync()
 
-@bot.event
-async def on_ready():
-    print("등장 : ")
-    print(bot.user.name)
-    print(bot.user.id)
-    print("----------")
-    print(len(bot.guilds), "개 서버에서 동작 중")
-    print("==========")
-    game = discord.Game("퓨이린 봇 개발모드")
-    await bot.change_presence(status=discord.Status.online, activity=game)
+    async def on_ready(self):
+        print("등장 : ")
+        print(self.user.name)
+        print(self.user.id)
+        print("----------")
+        print(len(bot.guilds), "개 서버에서 동작 중")
+        print("==========")
+        game = discord.Game("퓨이린 봇 개발모드")
+        await self.change_presence(status=discord.Status.online, activity=game)
 
+asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+bot = PuilinBot()
 bot.run(token)

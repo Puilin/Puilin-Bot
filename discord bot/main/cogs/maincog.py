@@ -6,6 +6,7 @@ import time
 import warnings
 from datetime import datetime
 from pytz import timezone
+from discord import app_commands
 
 global daily
 daily = []
@@ -36,8 +37,9 @@ class MainCog(commands.Cog):
         picked = random.randint(int(num1), int(num2))
         await ctx.send('뽑힌 숫자는 : '+str(picked))
     
-    @commands.command(name="골라", pass_context=True)
-    async def pick(self, ctx):
+    @app_commands.command(name="골라", description="뭘 고를지 망설여지시나요? 봇이 뽑아드립니다!")
+    async def pick(self, interacton :discord.Interaction):
+        ctx = await commands.Context.from_interaction(interaction)
         embed = discord.Embed(title="뭘 뽑을지는 봇의 마음", description="", color=0x3DB7CC)
         embed.add_field(name="고를 대상을 입력해주세요", value="(예시) 코카콜라 펩시", inline=False)
         await ctx.send(embed=embed)
@@ -61,11 +63,14 @@ class MainCog(commands.Cog):
         except asyncio.TimeoutError:
             await ctx.send("입력 시간 초과")
 
-    @commands.command(name="골라`", pass_context=True)
-    async def pick2(self, ctx, *args):
-        list1 = list(args)
+    @app_commands.command(name="골라_", description="경우의 수가 2가지인 경우. /골라의 약식 명령어")
+    @app_commands.describe(대상1="봇이 고를 대상1", 대상2="봇이 고를 대상2")
+    async def pick_simple(self, interaction :discord.Interaction, 대상1 :str, 대상2 :str):
+        list1 = []
+        list1.append(대상1)
+        list1.append(대상2)
         bots_choice = random.sample(list1,1)
-        await ctx.send("%s" %bots_choice)
+        await interaction.response.send_message("%s" %bots_choice)
 
     @commands.command(name="청소", pass_context=True)
     async def _clear(self, ctx, *, amount=5):
@@ -78,18 +83,6 @@ class MainCog(commands.Cog):
 
         if message.author.bot:
             return None
-        if message.content == "/안녕":
-            await message.channel.send("안녕하세요.")
-        if message.content == "/발":
-            await message.channel.send("발이라 부르지 마세요.")
-        if message.content == "/나무":
-            await message.channel.send("나무를 캡니다.")
-            treeHit = 0
-            while treeHit < 5:
-                treeHit += 1
-                await message.channel.send("나무를 %d번 캤습니다" %treeHit)
-                time.sleep(1)
-            await message.channel.send("나무가 쓰러집니다")
         if message.content == "/패치노트":
             await message.channel.send("https://github.com/Puilin/My-own-code/blob/master/%ED%8C%A8%EC%B9%98%EB%85%B8%ED%8A%B8.md")
         if message.content == "/DN":
@@ -161,5 +154,11 @@ class MainCog(commands.Cog):
                             + str(now[:10]) + " :white_check_mark: 출석체크 완료")
 
 
-def setup(bot):
-    bot.add_cog(MainCog(bot))
+async def setup(bot):
+    maincog = MainCog(bot)
+    await bot.add_cog(maincog)
+    try:
+        bot.tree.add_command(maincog.pick)
+        bot.tree.add_command(maincog.pick_simple)
+    except app_commands.CommandAlreadyRegistered:
+        pass

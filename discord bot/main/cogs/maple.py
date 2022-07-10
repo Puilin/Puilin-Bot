@@ -1,5 +1,6 @@
 import asyncio
 import discord
+from discord import app_commands
 from discord.ext import commands
 import random
 import pandas as pd
@@ -9,8 +10,9 @@ class Maple(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="메이플", pass_context=True)
-    async def maple(self, ctx):
+    @app_commands.command(name="메이플", description="메이플 편의기능 호출")
+    async def maple(self, interaction :discord.Interaction):
+        ctx = await commands.Context.from_interaction(interaction)
         embed = discord.Embed(title="메이플 편의기능", description="", color=0xFAE0D4)
         embed.add_field(name="직업뽑기  (🎲)", value="봇이 직업을 무작위로 뽑아줍니다. (링크/유니온 육성에 유용)", inline=False)
         embed.add_field(name="추옵  (\u2694)" ,value="무기의 추가옵션을 봅니다.", inline=False)
@@ -292,13 +294,13 @@ class Maple(commands.Cog):
                 embed.add_field(name="보스 방무 딜 계산  (🛡️)" ,value="보스에게 들어가는 실제 데미지를 계산합니다.", inline=False)
                 embed.add_field(name="극성비 경험치 계산  (🧪)" ,value="극성비 사용 후 예상 레벨을 계산합니다", inline=False)
                 message = await ctx.send(embed=embed)
-                for i in ['🕐']:
+                for i in ['🛡️', '🧪']:
                     await message.add_reaction(i)
                 def check_m6(reaction, user):
                     return user == ctx.author
                 try:
                     reaction, user = await self.bot.wait_for("reaction_add", timeout=10, check=check_m6)
-                    if str(reaction.emoji) == '🕐':
+                    if str(reaction.emoji) == '🛡️':
                         await ctx.send("보스의 방어율을 입력해주세요. (0 이상)")
                         def check_m7(message):
                             return message.author == ctx.author and message.content.isdigit() and int(message.content) >= 0
@@ -390,8 +392,9 @@ class Maple(commands.Cog):
         except asyncio.TimeoutError:
             await ctx.send("입력 시간 초과")
 
-    @commands.command(name="극성비", pass_context=True)
-    async def gsb(self, ctx):
+    @app_commands.command(name="극성비", description="극성비 사용 후 예상 레벨 계산")
+    async def gsb(self, interaction: discord.Interaction):
+        ctx = await commands.Context.from_interaction(interaction)
         await ctx.send("레벨과 경험치 비율(%), 극성비 개수를 입력해주세요. (띄어쓰기로 구분)\nex) 261 10.597 2")
         def check_m10(message):
             def isfloat(num):
@@ -457,5 +460,11 @@ class Maple(commands.Cog):
         except asyncio.TimeoutError:
             await ctx.send("입력 시간 초과")
 
-def setup(bot):
-    bot.add_cog(Maple(bot))
+async def setup(bot):
+    maple = Maple(bot)
+    await bot.add_cog(maple)
+    try:
+        bot.tree.add_command(maple.maple)
+        bot.tree.add_command(maple.gsb)
+    except app_commands.CommandAlreadyRegistered:
+        pass

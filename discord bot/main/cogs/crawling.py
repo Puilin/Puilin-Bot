@@ -390,5 +390,5 @@ class Crawling(commands.Cog):
             await message.channel.send(embed=embed)
 
 
-def setup(bot):
-    bot.add_cog(Crawling(bot))
+async def setup(bot):
+    await bot.add_cog(Crawling(bot))
