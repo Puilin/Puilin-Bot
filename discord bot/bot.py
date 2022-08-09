@@ -38,6 +38,7 @@ class PuilinBot(commands.Bot):
         game = discord.Game("퓨이린 봇 개발모드")
         await self.change_presence(status=discord.Status.online, activity=game)
 
+# Windows의 경우 event loop 정책 설정 변경
 asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 bot = PuilinBot()
 bot.run(token)
