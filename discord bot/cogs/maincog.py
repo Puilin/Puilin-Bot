@@ -38,8 +38,8 @@ class MainCog(commands.Cog):
         await ctx.send('뽑힌 숫자는 : '+str(picked))
     
     @app_commands.command(name="골라", description="뭘 고를지 망설여지시나요? 봇이 뽑아드립니다!")
-    async def pick(self, interacton :discord.Interaction):
-        ctx = await commands.Context.from_interaction(interaction)
+    async def pick(self, inter :discord.Interaction):
+        ctx = await commands.Context.from_interaction(inter)
         embed = discord.Embed(title="뭘 뽑을지는 봇의 마음", description="", color=0x3DB7CC)
         embed.add_field(name="고를 대상을 입력해주세요", value="(예시) 코카콜라 펩시", inline=False)
         await ctx.send(embed=embed)
