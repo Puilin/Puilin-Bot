@@ -78,8 +78,7 @@ class MainCog(commands.Cog):
         ctx = await commands.Context.from_interaction(interaction)
         try:
             await ctx.channel.purge(limit=amount)
-            view = discord.ui.View(timeout=10.0)
-            await interaction.response.send_message(content="청소가 완료되었습니다.", view=view, ephemeral=True)
+            await interaction.response.send_message(content="청소가 완료되었습니다.", ephemeral=True)
         except discord.app_commands.MissingPermissions:
             await ctx.send("메시지 관리 권한이 없습니다.")
 
