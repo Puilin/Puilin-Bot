@@ -70,7 +70,7 @@ class MainCog(commands.Cog):
         list1.append(대상1)
         list1.append(대상2)
         bots_choice = random.sample(list1,1)
-        await interaction.response.send_message("%s" %bots_choice)
+        await interaction.response.send_message("{}, {} 중에서 저는 {}를 고르겠어요!".format(대상1, 대상2, bots_choice))
 
     @app_commands.command(name="청소", description="채널의 메시지를 삭제합니다.")
     @app_commands.checks.bot_has_permissions(manage_messages=True)
