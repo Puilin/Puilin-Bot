@@ -72,9 +72,16 @@ class MainCog(commands.Cog):
         bots_choice = random.sample(list1,1)
         await interaction.response.send_message("%s" %bots_choice)
 
-    @commands.command(name="청소", pass_context=True)
-    async def _clear(self, ctx, *, amount=5):
-        await ctx.channel.purge(limit=amount)
+    @app_commands.command(name="청소", description="채널의 메시지를 삭제합니다.")
+    @app_commands.checks.bot_has_permissions(manage_messages=True)
+    async def _clear(self, interaction: discord.Interaction, amount:int):
+        ctx = await commands.Context.from_interaction(interaction)
+        try:
+            await ctx.channel.purge(limit=amount)
+            view = discord.ui.View(timeout=10.0)
+            await interaction.response.send_message(content="청소가 완료되었습니다.", view=view, ephemeral=True)
+        except discord.app_commands.MissingPermissions:
+            await ctx.send("메시지 관리 권한이 없습니다.")
 
 
     @commands.Cog.listener()
@@ -160,5 +167,6 @@ async def setup(bot):
     try:
         bot.tree.add_command(maincog.pick)
         bot.tree.add_command(maincog.pick_simple)
+        bot.tree.add_command(maincog._clear)
     except app_commands.CommandAlreadyRegistered:
         pass
