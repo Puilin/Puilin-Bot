@@ -1,4 +1,5 @@
 import asyncio
+from typing import Optional
 import discord
 from discord.ext import commands
 import random
@@ -6,13 +7,33 @@ import time
 import warnings
 from datetime import datetime
 from pytz import timezone
-from discord import app_commands
+from discord import app_commands, ui
 
 global daily
 daily = []
 global timestamp
 timestamp = []
 
+class take_query(ui.Modal):
+    opt1 = discord.SelectOption(label="멘션으로 지정", value="mention", emoji="📢")
+    opt2 = discord.SelectOption(label="감정표현으로 참여", value="reaction", emoji="👍")
+    opt_list = [opt1, opt2]
+
+    answer1 = ui.TextInput(label="구성할 팀 개수를 입력하세요.", style=discord.TextStyle.short, placeholder="2", default="2")
+    answer2 = ui.Select(placeholder="멤버 지정 방식 선택", options=opt_list)
+
+    def __init__(self, *, title: str = ..., timeout: Optional[float] = None, custom_id: str = ...) -> None:
+        super().__init__(title="팀 매칭 시스템", timeout=15.0)
+
+    async def on_submit(self, interaction: discord.Interaction):
+        if not self.answer1.value.isdigit() or int(self.answer1.value) < 1:
+            await interaction.response.send_message("입력이 올바르지 않습니다. 1 이상의 정수를 입력해주세요.")
+        else:
+            if self.answer2.values[0] == "mention":
+                await interaction.response.send_message("억장와르르멘션입니다.")
+            elif self.answer2.values[0] == "reaction":
+                await interaction.response.send_message("리액션입니다.")
+            
 
 class MainCog(commands.Cog):
 
@@ -82,6 +103,13 @@ class MainCog(commands.Cog):
         except discord.app_commands.MissingPermissions:
             await ctx.send("메시지 관리 권한이 없습니다.")
 
+    
+    @app_commands.command(name="팀매칭", description="팀매칭 시스템을 불러옵니다.")
+    async def matching(self, interaction: discord.Interaction):
+        modal1 = take_query()
+        await interaction.response.send_modal(modal1)
+        
+
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -101,7 +129,6 @@ class MainCog(commands.Cog):
             embed.add_field(name = "/안녕", value = "퓨이린 봇이 인사를 합니다.", inline=False)
             embed.add_field(name = "/청소 (숫자)", value = "(숫자)만큼 지난 채팅을 삭제합니다.", inline=False)
             embed.add_field(name = "/출첵 or /출석체크", value = "출석체크 현황을 확인합니다.", inline=False)
-            embed.add_field(name = "/나무", value = "봇이 나무를 캐줍니다.", inline=False)
             embed.add_field(name = "/발", value = "금지된 명령어입니다.", inline=False)
             embed.add_field(name = "/DN", value = "금지된 명령어입니다2", inline=False)
             embed.add_field(name = ":fork_and_knife: 편의 기능", value = "-" * 50, inline=False)
@@ -167,5 +194,6 @@ async def setup(bot):
         bot.tree.add_command(maincog.pick)
         bot.tree.add_command(maincog.pick_simple)
         bot.tree.add_command(maincog._clear)
+        bot.tree.add_command(maincog.matching)
     except app_commands.CommandAlreadyRegistered:
         pass

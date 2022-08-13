@@ -10,7 +10,7 @@ class PuilinBot(commands.Bot):
             command_prefix='/',
             intents=discord.Intents.all(),
             sync_command=True,
-            application_id=710842722046574603
+            application_id=your_id
         )
         self.initial_extension = [
             "cogs.maincog",
