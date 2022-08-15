@@ -1,5 +1,5 @@
 import asyncio
-from typing import Optional
+from sqlite3 import Time
 import discord
 from discord.ext import commands
 import random
@@ -7,32 +7,12 @@ import time
 import warnings
 from datetime import datetime
 from pytz import timezone
-from discord import app_commands, ui
+from discord import app_commands
 
 global daily
 daily = []
 global timestamp
 timestamp = []
-
-class take_query(ui.Modal):
-    opt1 = discord.SelectOption(label="멘션으로 지정", value="mention", emoji="📢")
-    opt2 = discord.SelectOption(label="감정표현으로 참여", value="reaction", emoji="👍")
-    opt_list = [opt1, opt2]
-
-    answer1 = ui.TextInput(label="구성할 팀 개수를 입력하세요.", style=discord.TextStyle.short, placeholder="2", default="2")
-    answer2 = ui.Select(placeholder="멤버 지정 방식 선택", options=opt_list)
-
-    def __init__(self, *, title: str = ..., timeout: Optional[float] = None, custom_id: str = ...) -> None:
-        super().__init__(title="팀 매칭 시스템", timeout=15.0)
-
-    async def on_submit(self, interaction: discord.Interaction):
-        if not self.answer1.value.isdigit() or int(self.answer1.value) < 1:
-            await interaction.response.send_message("입력이 올바르지 않습니다. 1 이상의 정수를 입력해주세요.")
-        else:
-            if self.answer2.values[0] == "mention":
-                await interaction.response.send_message("억장와르르멘션입니다.")
-            elif self.answer2.values[0] == "reaction":
-                await interaction.response.send_message("리액션입니다.")
             
 
 class MainCog(commands.Cog):
@@ -57,6 +37,17 @@ class MainCog(commands.Cog):
     async def 뽑기(self, ctx, num1, num2):
         picked = random.randint(int(num1), int(num2))
         await ctx.send('뽑힌 숫자는 : '+str(picked))
+
+    @app_commands.command(name="피망", description="퓨이린 봇에게 피망을 줍니다. 매일 한 개씩 주도록 합시다.")
+    async def pimang(self, interaction :discord.Interaction):
+        response = [
+            "으악...",
+            "저한테 왜이러세요.. 8ㅁ8",
+            "초록괴물이다!!!",
+            "시러어어어",
+            "너무해ㅐ.."
+        ]
+        await interaction.response.send_message("%s" %random.sample(response, 1)[0])
     
     @app_commands.command(name="골라", description="뭘 고를지 망설여지시나요? 봇이 뽑아드립니다!")
     async def pick(self, inter :discord.Interaction):
@@ -104,11 +95,110 @@ class MainCog(commands.Cog):
             await ctx.send("메시지 관리 권한이 없습니다.")
 
     
-    @app_commands.command(name="팀매칭", description="팀매칭 시스템을 불러옵니다.")
-    async def matching(self, interaction: discord.Interaction):
-        modal1 = take_query()
-        await interaction.response.send_modal(modal1)
-        
+    @app_commands.command(name="팀매칭1", description="선택한 멤버들로 여러 팀을 구성합니다. (10명 이하인 경우)")
+    async def matching(self, interaction: discord.Interaction, member1: discord.Member, member2: discord.Member = None,\
+        member3: discord.Member = None, member4: discord.Member = None, member5: discord.Member = None,\
+            member6: discord.Member = None, member7: discord.Member = None, member8: discord.Member = None,\
+                member9: discord.Member = None, member10: discord.Member = None):
+        ctx = await commands.Context.from_interaction(interaction)
+        await ctx.send("구성할 팀의 개수를 입력하세요.")
+        def check(message):
+            return message.content.isdigit()
+        members = [member1, member2, member3, member4, member5, member6, member7, member8, member9, member10]
+        for member in members.copy():
+            if member == None:
+                members.remove(member)
+        try:
+            while True:
+                message = await self.bot.wait_for('message', timeout=10, check=check)
+                team_count = int(message.content)
+                if team_count > len(members):
+                    await ctx.send("멤버의 수보다 팀의 개수가 많습니다. 다시 입력해주세요")
+                    continue
+                elif team_count <= 0:
+                    await ctx.send("1 이상의 수를 입력해주세요.")
+                    continue
+                else:
+                    break
+            alloc = [0 for _ in range(team_count)]
+            for i in range(len(members)):
+                alloc[i % team_count] += 1
+            matched = []
+            for j in alloc:
+                chosen = random.sample(members, j)
+                matched.append(chosen)
+                members = list(set(members) - set(chosen))
+            embed = discord.Embed(title="팀 매칭 결과", color=0xCCCCFF)
+            index = 1
+            for team in matched:
+                output = []
+                printing = ""
+                for member in team:
+                    output.append(member.name)
+                    printing += member.name + "\n"
+                embed.add_field(name="team " + str(index), value=printing)
+                index += 1
+            await ctx.send(embed=embed)
+        except asyncio.TimeoutError:
+            ctx.send("입력 시간 초과로 팀매칭 시스템을 종료합니다.")
+
+    @app_commands.command(name="팀매칭2", description="감정표현에 참여한 멤버들로 여러 팀을 구성합니다. (인원 제한 없음)")
+    async def matching2(self, interaction: discord.Interaction):
+        ctx = await commands.Context.from_interaction(interaction)
+        embed = discord.Embed(title="팀 매칭 시스템", description="팀 짤 사람 10초 안에 모여라!", color=0xCCCCFF)
+        message = await ctx.send(embed=embed)
+        await message.add_reaction('👍')
+        def check1(reaction, user):
+            return str(reaction.emoji) == '👍'
+        try:
+            reaction, user = await self.bot.wait_for('reaction_add', timeout=10.0, check=check1)
+            for sec in range(10, -1, -1):
+                embed = discord.Embed(title="팀 매칭 시스템", description="팀 짤 사람 {}초 안에 모여라!".format(sec), color=0xCCCCFF)
+                await asyncio.sleep(1.0)
+                await message.edit(embed=embed)
+            members = []
+            async for i in reaction.users():
+                if (not i.bot):
+                    members.append(i.name)
+            def check2(message):
+                return message.content.isdigit()
+            await ctx.send("구성할 팀의 개수를 입력하세요.")
+            try:
+                while True:
+                    message = await self.bot.wait_for('message', timeout=10, check=check2)
+                    team_count = int(message.content)
+                    if team_count > len(members):
+                        await ctx.send("멤버의 수보다 팀의 개수가 많습니다. 다시 입력해주세요")
+                        continue
+                    elif team_count <= 0:
+                        await ctx.send("1 이상의 수를 입력해주세요")
+                        continue
+                    else:
+                        break
+                alloc = [0 for _ in range(team_count)]
+                for i in range(len(members)):
+                    alloc[i % team_count] += 1
+                matched = []
+                for j in alloc:
+                    chosen = random.sample(members, j)
+                    matched.append(chosen)
+                    members = list(set(members) - set(chosen))
+                embed = discord.Embed(title="팀 매칭 결과", color=0xCCCCFF)
+                index = 1
+                for team in matched:
+                    output = []
+                    printing = ""
+                    for member in team:
+                        output.append(member)
+                        printing += member + "\n"
+                    embed.add_field(name="team " + str(index), value=printing)
+                    index += 1
+                await ctx.send(embed=embed)
+            except asyncio.TimeoutError:
+                await ctx.send("입력 시간 초과로 팀매칭 시스템을 종료합니다.")
+        except asyncio.TimeoutError:
+            await message.clear_reactions()
+            await ctx.send("아무도 팀을 짜고 싶지 않나봐요..")
 
 
     @commands.Cog.listener()
@@ -126,9 +216,9 @@ class MainCog(commands.Cog):
             embed.add_field(name = ":gear: 기본 기능", value = "-" * 50, inline=False)
             embed.add_field(name = "/도움말 or /명령어", value = "명령어 목록을 볼 수 있습니다.", inline=False)
             embed.add_field(name = "/패치노트", value = "패치노트를 확인합니다.", inline=False)
-            embed.add_field(name = "/안녕", value = "퓨이린 봇이 인사를 합니다.", inline=False)
             embed.add_field(name = "/청소 (숫자)", value = "(숫자)만큼 지난 채팅을 삭제합니다.", inline=False)
             embed.add_field(name = "/출첵 or /출석체크", value = "출석체크 현황을 확인합니다.", inline=False)
+            embed.add_field(name = "/피망", value = "퓨이린 봇에게 피망을 줄 수 있습니다. 매일 하나씩 주도록 합시다.", inline=False)
             embed.add_field(name = "/발", value = "금지된 명령어입니다.", inline=False)
             embed.add_field(name = "/DN", value = "금지된 명령어입니다2", inline=False)
             embed.add_field(name = ":fork_and_knife: 편의 기능", value = "-" * 50, inline=False)
@@ -145,14 +235,6 @@ class MainCog(commands.Cog):
             embed.add_field(name = "/강화 (멤버이름)", value = "해당 멤버를 인챈트합니다.", inline=False)
             embed.add_field(name = "/강화현황 (멤버이름)", value = "해당 멤버의 인챈트 단계를 확인합니다.", inline=False)
             embed.add_field(name = "/강화랭킹", value = "강화 랭킹을 조회합니다.", inline=False)
-            embed.add_field(name = ":musical_note: 음악", value = "-" * 50, inline=False)
-            embed.add_field(name = "/커몬", value = "봇이 음성채팅방에 참여합니다.", inline=False)
-            embed.add_field(name = "/바이", value = "봇이 음성채팅방에서 나갑니다.", inline=False)
-            embed.add_field(name = "/재생 (유튜브링크)", value = "음악을 재생합니다.", inline=False)
-            embed.add_field(name = "/반복", value = "이전곡을 반복합니다.", inline=False)
-            embed.add_field(name = "/일시정지", value = "음악을 일시정지합니다.", inline=False)
-            embed.add_field(name = "/재개", value = "정지한 음악을 다시 재생합니다.", inline=False)
-            embed.add_field(name = "/정지", value = "음악을 완전히 정지합니다.", inline=False)
             await message.channel.send(embed=embed)
         if message.content in ["/출첵", "/출석체크"]:
             embed = discord.Embed(title="출석체크 현황", description="", color=0xD1B2FF)
@@ -194,6 +276,8 @@ async def setup(bot):
         bot.tree.add_command(maincog.pick)
         bot.tree.add_command(maincog.pick_simple)
         bot.tree.add_command(maincog._clear)
+        bot.tree.add_command(maincog.pimang)
         bot.tree.add_command(maincog.matching)
+        bot.tree.add_command(maincog.matching2)
     except app_commands.CommandAlreadyRegistered:
         pass
