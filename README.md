@@ -1,5 +1,10 @@
 # Puilin-Bot
 [퓨이린 봇 소개 사이트](https://puilinbot.herokuapp.com/)를 오픈했습니다.<br>
+## Stack
+<div align=left>
+<img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white">
+<img src="https://img.shields.io/badge/discord.py 2.0-5865F2?style=for-the-badge&logo=discord&logoColor=white">
+</div>
 
 ## 퓨이린 봇
 * [초대 링크 (invitation link)](https://discord.com/api/oauth2/authorize?client_id=692037061414355004&permissions=1507500227825&scope=bot)
