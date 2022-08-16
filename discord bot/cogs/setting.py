@@ -87,5 +87,5 @@ class Setting(commands.Cog):
         except asyncio.TimeoutError:
             pass
 
-def setup(bot):
-    bot.add_cog(Setting(bot))
+async def setup(bot):
+    await bot.add_cog(Setting(bot))

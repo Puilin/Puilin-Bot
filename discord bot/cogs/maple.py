@@ -1,15 +1,18 @@
 import asyncio
 import discord
+from discord import app_commands
 from discord.ext import commands
 import random
+import pandas as pd
 
 class Maple(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="메이플", pass_context=True)
-    async def maple(self, ctx):
+    @app_commands.command(name="메이플", description="메이플 편의기능 호출")
+    async def maple(self, interaction :discord.Interaction):
+        ctx = await commands.Context.from_interaction(interaction)
         embed = discord.Embed(title="메이플 편의기능", description="", color=0xFAE0D4)
         embed.add_field(name="직업뽑기  (🎲)", value="봇이 직업을 무작위로 뽑아줍니다. (링크/유니온 육성에 유용)", inline=False)
         embed.add_field(name="추옵  (\u2694)" ,value="무기의 추가옵션을 봅니다.", inline=False)
@@ -216,10 +219,12 @@ class Maple(commands.Cog):
             elif str(reaction.emoji) == '❄':
                 embed = discord.Embed(title="심볼", description="", color=0xFAE0D4)
                 embed.add_field(name="소멸의 여로  (🕐)" ,value="lv.200", inline=False)
-                embed.add_field(name="츄츄~에스페라  (🕑)" ,value="lv.210~235", inline=False)
+                embed.add_field(name="츄츄  (🕑)" ,value="lv.210", inline=False)
+                embed.add_field(name="레헬른  (🕒)" ,value="lv.220", inline=False)
+                embed.add_field(name="아르카나~에스페라  (🕓)" ,value="lv.225~235", inline=False)
                 message = await ctx.send(embed=embed)
 
-                for i in ['🕐', '🕑']:
+                for i in ['🕐', '🕑', '🕒', '🕓']:
                     await message.add_reaction(i)
                 
                 def check_m3(reaction, user):
@@ -235,7 +240,7 @@ class Maple(commands.Cog):
                             if int(message.content) == 20:
                                 await ctx.send("최대 레벨입니다.")
                                 return None
-                            meso = 2370000 + int(message.content) * 7130000
+                            meso = 3110000 + int(message.content) * 3960000
                             growth = int(message.content)**2 + 11
                             await ctx.send("필요 성장치 : %d\n강화 비용 : %d 메소" %(growth,meso))
                         except asyncio.TimeoutError:
@@ -249,7 +254,35 @@ class Maple(commands.Cog):
                             if int(message.content) == 20:
                                 await ctx.send("최대 레벨입니다.")
                                 return None
-                            meso = 12440000 + int(message.content) * 6600000
+                            meso = 6220000 + int(message.content) * 4620000
+                            growth = int(message.content)**2 + 11
+                            await ctx.send("필요 성장치 : %d\n강화 비용 : %d 메소" %(growth,meso))
+                        except asyncio.TimeoutError:
+                            await ctx.send("입력 시간 초과")
+                    elif str(reaction.emoji) == '🕒':
+                        def check_m5(message):
+                            return message.author == ctx.author and message.content.isdigit() and 1<=int(message.content)<=20
+                        try:
+                            await ctx.send("현재 심볼 레벨을 입력해 주세요 (1~20)")
+                            message = await self.bot.wait_for("message", timeout=20, check=check_m5)
+                            if int(message.content) == 20:
+                                await ctx.send("최대 레벨입니다.")
+                                return None
+                            meso = 9330000 + int(message.content) * 5280000
+                            growth = int(message.content)**2 + 11
+                            await ctx.send("필요 성장치 : %d\n강화 비용 : %d 메소" %(growth,meso))
+                        except asyncio.TimeoutError:
+                            await ctx.send("입력 시간 초과")
+                    elif str(reaction.emoji) == '🕓':
+                        def check_m5(message):
+                            return message.author == ctx.author and message.content.isdigit() and 1<=int(message.content)<=20
+                        try:
+                            await ctx.send("현재 심볼 레벨을 입력해 주세요 (1~20)")
+                            message = await self.bot.wait_for("message", timeout=20, check=check_m5)
+                            if int(message.content) == 20:
+                                await ctx.send("최대 레벨입니다.")
+                                return None
+                            meso = 11196000 + int(message.content) * 5940000
                             growth = int(message.content)**2 + 11
                             await ctx.send("필요 성장치 : %d\n강화 비용 : %d 메소" %(growth,meso))
                         except asyncio.TimeoutError:
@@ -258,15 +291,16 @@ class Maple(commands.Cog):
                     await ctx.send("입력 시간 초과")
             elif str(reaction.emoji) == '🧮':
                 embed = discord.Embed(title="계산 기능", description="", color=0xFAE0D4)
-                embed.add_field(name="보스 방무 딜 계산  (🕐)" ,value="보스에게 들어가는 실제 데미지를 계산합니다.", inline=False)
+                embed.add_field(name="보스 방무 딜 계산  (🛡️)" ,value="보스에게 들어가는 실제 데미지를 계산합니다.", inline=False)
+                embed.add_field(name="극성비 경험치 계산  (🧪)" ,value="극성비 사용 후 예상 레벨을 계산합니다", inline=False)
                 message = await ctx.send(embed=embed)
-                for i in ['🕐']:
+                for i in ['🛡️', '🧪']:
                     await message.add_reaction(i)
                 def check_m6(reaction, user):
                     return user == ctx.author
                 try:
                     reaction, user = await self.bot.wait_for("reaction_add", timeout=10, check=check_m6)
-                    if str(reaction.emoji) == '🕐':
+                    if str(reaction.emoji) == '🛡️':
                         await ctx.send("보스의 방어율을 입력해주세요. (0 이상)")
                         def check_m7(message):
                             return message.author == ctx.author and message.content.isdigit() and int(message.content) >= 0
@@ -287,11 +321,150 @@ class Maple(commands.Cog):
                                 await ctx.send("입력 시간 초과")
                         except asyncio.TimeoutError:
                             await ctx.send("입력 시간 초과")
+                    elif str(reaction.emoji) == '🧪':
+                        await ctx.send("레벨과 경험치 비율(%), 극성비 개수를 입력해주세요. (띄어쓰기로 구분)\nex) 261 10.597 2")
+                        def check_m9(message):
+                            def isfloat(num):
+                                try:
+                                    float(num)
+                                    return True
+                                except ValueError:
+                                    return False
+                            parsed = message.content.split()
+                            return message.author == ctx.author and len(parsed) >= 2 and parsed[0].isdigit() and isfloat(parsed[1])
+                        try:
+                            message = await self.bot.wait_for("message", timeout=15, check=check_m9)
+                            parsed = message.content.split()
+                            gsb_count = 0
+                            if len(parsed) == 2:
+                                gsb_count = 1
+                            else:
+                                if int(parsed[2]) > 100:
+                                    await ctx.send("최대 100개의 극성비만 계산할 수 있습니다.")
+                                    return
+                                gsb_count = int(parsed[2])
+                            if int(parsed[0]) < 200:
+                                await ctx.send("극한 성장의 비약은 200레벨 이상의 캐릭터만 사용할 수 있습니다.")
+                                return
+                            if int(parsed[0]) >= 300:
+                                embed = discord.Embed(title="극성비", description="", color=0xCBDD61)
+                                embed.add_field(name="예상 레벨" ,value="Lv.300 -> Lv.300", inline=False)
+                                embed.add_field(name="예상 경험치량" ,value="0.000 % -> 0.000 %", inline=False)
+                                await ctx.send(embed=embed)
+                            df = pd.read_csv('./exp.csv', names = ['lv', 'exp', 'cum'])
+                            lv = int(parsed[0])
+                            find_row = df.loc[df['lv'] == int(parsed[0])]
+                            gsb = 0
+                            req_exp = int(list(find_row['exp'])[0]) # 경험치 요구량
+                            cur_exp = req_exp * (float(parsed[1]) / 100.0) # 현재 경험치
+                            ratio = 0.0
+                            predict_exp = 0
+                            for _ in range(gsb_count):
+                                if lv < 250:
+                                    gsb = req_exp
+                                else:
+                                    gsb = 627637515116
+                                predict_exp = cur_exp + gsb
+                                if (predict_exp >= req_exp):
+                                    lv += 1
+                                    find_row = df.loc[df['lv'] == lv]
+                                    cur_exp = predict_exp - req_exp
+                                else:
+                                    cur_exp = predict_exp
+                                try:
+                                    req_exp = int(list(find_row['exp'])[0])
+                                except IndexError:
+                                    embed = discord.Embed(title="극성비", description="", color=0xCBDD61)
+                                    embed.add_field(name="예상 레벨" ,value="Lv.{} -> Lv.300".format(parsed[0]), inline=False)
+                                    embed.add_field(name="예상 경험치량" ,value="{} % -> 0.000 %".format(parsed[1]), inline=False)
+                                    await ctx.send(embed=embed)
+                                    return None
+                                ratio = cur_exp / req_exp * 100.0
+                            embed = discord.Embed(title="극성비", description="", color=0xCBDD61)
+                            embed.add_field(name="예상 레벨" ,value="Lv.{} -> Lv.{}".format(parsed[0], lv), inline=False)
+                            embed.add_field(name="예상 경험치량" ,value="{} % -> {} %".format(parsed[1], round(ratio, 3)), inline=False)
+                            await ctx.send(embed=embed)
+                        except asyncio.TimeoutError:
+                            await ctx.send("입력 시간 초과")
                 except asyncio.TimeoutError:
                     await ctx.send("입력 시간 초과")
                 
         except asyncio.TimeoutError:
             await ctx.send("입력 시간 초과")
 
-def setup(bot):
-    bot.add_cog(Maple(bot))
+    @app_commands.command(name="극성비", description="극성비 사용 후 예상 레벨 계산")
+    async def gsb(self, interaction: discord.Interaction):
+        ctx = await commands.Context.from_interaction(interaction)
+        await ctx.send("레벨과 경험치 비율(%), 극성비 개수를 입력해주세요. (띄어쓰기로 구분)\nex) 261 10.597 2")
+        def check_m10(message):
+            def isfloat(num):
+                try:
+                    float(num)
+                    return True
+                except ValueError:
+                    return False
+            parsed = message.content.split()
+            return message.author == ctx.author and len(parsed) >= 2 and parsed[0].isdigit() and isfloat(parsed[1])
+        try:
+            message = await self.bot.wait_for("message", timeout=15, check=check_m10)
+            parsed = message.content.split()
+            gsb_count = 0
+            if len(parsed) == 2:
+                gsb_count = 1
+            else:
+                if int(parsed[2]) > 100:
+                    await ctx.send("최대 100개의 극성비만 계산할 수 있습니다.")
+                    return
+                gsb_count = int(parsed[2])
+            if int(parsed[0]) < 200:
+                await ctx.send("극한 성장의 비약은 200레벨 이상의 캐릭터만 사용할 수 있습니다.")
+                return
+            if int(parsed[0]) >= 300:
+                embed = discord.Embed(title="극성비", description="", color=0xCBDD61)
+                embed.add_field(name="예상 레벨" ,value="Lv.300 -> Lv.300", inline=False)
+                embed.add_field(name="예상 경험치량" ,value="0.000 % -> 0.000 %", inline=False)
+                await ctx.send(embed=embed)
+            df = pd.read_csv('./exp.csv', names = ['lv', 'exp', 'cum'])
+            lv = int(parsed[0])
+            find_row = df.loc[df['lv'] == int(parsed[0])]
+            gsb = 0
+            req_exp = int(list(find_row['exp'])[0]) # 경험치 요구량
+            cur_exp = req_exp * (float(parsed[1]) / 100.0) # 현재 경험치
+            ratio = 0.0
+            predict_exp = 0
+            for _ in range(gsb_count):
+                if lv < 250:
+                    gsb = req_exp
+                else:
+                    gsb = 627637515116
+                predict_exp = cur_exp + gsb
+                if (predict_exp >= req_exp):
+                    lv += 1
+                    find_row = df.loc[df['lv'] == lv]
+                    cur_exp = predict_exp - req_exp
+                else:
+                    cur_exp = predict_exp
+                try:
+                    req_exp = int(list(find_row['exp'])[0])
+                except IndexError:
+                    embed = discord.Embed(title="극성비", description="", color=0xCBDD61)
+                    embed.add_field(name="예상 레벨" ,value="Lv.{} -> Lv.300".format(parsed[0]), inline=False)
+                    embed.add_field(name="예상 경험치량" ,value="{} % -> 0.000 %".format(parsed[1]), inline=False)
+                    await ctx.send(embed=embed)
+                    return None
+                ratio = cur_exp / req_exp * 100.0
+            embed = discord.Embed(title="극성비", description="", color=0xCBDD61)
+            embed.add_field(name="예상 레벨" ,value="Lv.{} -> Lv.{}".format(parsed[0], lv), inline=False)
+            embed.add_field(name="예상 경험치량" ,value="{} % -> {} %".format(parsed[1], round(ratio, 3)), inline=False)
+            await ctx.send(embed=embed)
+        except asyncio.TimeoutError:
+            await ctx.send("입력 시간 초과")
+
+async def setup(bot):
+    maple = Maple(bot)
+    await bot.add_cog(maple)
+    try:
+        bot.tree.add_command(maple.maple)
+        bot.tree.add_command(maple.gsb)
+    except app_commands.CommandAlreadyRegistered:
+        pass

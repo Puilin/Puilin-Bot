@@ -126,5 +126,5 @@ class Br31(commands.Cog):
             pass
 
 
-def setup(bot):
-    bot.add_cog(Br31(bot))
+async def setup(bot):
+    await bot.add_cog(Br31(bot))
