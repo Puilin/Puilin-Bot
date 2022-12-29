@@ -187,4 +187,7 @@ $RECYCLE.BIN/
 #data
 *.csv
 
+#DS store
+.DS_Store
+
 # End of https://www.toptal.com/developers/gitignore/api/windows,visualstudiocode,python
