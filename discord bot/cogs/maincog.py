@@ -3,17 +3,18 @@ from sqlite3 import Time
 import discord
 from discord.ext import commands
 import random
-import time
-import warnings
 from datetime import datetime
 from pytz import timezone
 from discord import app_commands
+import os
+import pymongo
 
-global daily
-daily = []
 global timestamp
 timestamp = []
             
+client = pymongo.MongoClient("your string here")
+db_point = client.point
+db_daily = client.daily
 
 class MainCog(commands.Cog):
 
@@ -93,6 +94,18 @@ class MainCog(commands.Cog):
             await interaction.response.send_message(content="청소가 완료되었습니다.", ephemeral=True)
         except discord.app_commands.MissingPermissions:
             await ctx.send("메시지 관리 권한이 없습니다.")
+    
+    @app_commands.command(name="포인트", description="현재 가지고 있는 포인트를 조회합니다.")
+    async def show_point(self, interaction: discord.Interaction):
+        server_id = interaction.user.guild.id
+        entry = db_point[str(server_id)].find_one({'id':str(interaction.user.id)})
+        embed = discord.Embed(title="포인트 조회", description="", color=0xCAA232)
+        if entry is None:
+            embed.add_field(name=f"{interaction.user.name}", value="0 Pt")
+            await interaction.response.send_message(embed=embed, ephemeral=True)
+            return
+        embed.add_field(name=f"{interaction.user.name}", value=f"{entry['points']} Pt", inline=False)
+        await interaction.response.send_message(embed=embed, ephemeral=True)
 
     
     @app_commands.command(name="팀매칭1", description="선택한 멤버들로 여러 팀을 구성합니다. (10명 이하인 경우)")
@@ -248,25 +261,39 @@ class MainCog(commands.Cog):
 
     @commands.Cog.listener()
     async def on_voice_state_update(self, member, before, after):
-        if MainCog.check_toggles(self, member.guild):
+        # if MainCog.check_toggles(self, member.guild):
             if before.channel is None and after.channel is not None and not member.bot:
-                if after.channel.name == '일반': # 채널을 이렇게 설정할 수 있다 (없어도 됨)
-                    fmt = "%Y-%m-%d %H:%M:%S %Z%z"
-                    KST = datetime.now(timezone('Asia/Seoul'))
-                    now = KST.strftime(fmt)
-                    timestamp.append(now[8:10])
-                    embed = discord.Embed(title = "음성 채널 참여", description = "<#" + str(after.channel.id)+"> 채널에 "+str(member.name)+' 님이 참여하셨습니다.', color = 0x00ff00)
-                    embed.add_field(name = "시간", value = str(now), inline=False)
-                    await member.guild.system_channel.send(embed=embed)
-                    try:
-                        if int(timestamp[-1]) - int(timestamp[-2]) != 0: # 날짜가 바뀌면 명단 초기화
-                            daily.clear()
-                    except IndexError:
-                        pass
-                    if not member in daily: #출석체크 명단에 있는지 체크 없으면 출첵
-                        daily.append(member)
-                        await member.guild.system_channel.send(str(member.name) + " 님 "\
-                            + str(now[:10]) + " :white_check_mark: 출석체크 완료")
+                # if after.channel.name == '일반': # 채널을 이렇게 설정할 수 있다 (없어도 됨)
+                server_id = member.guild.id
+                fmt = "%Y-%m-%d %H:%M:%S %Z%z"
+                KST = datetime.now(timezone('Asia/Seoul'))
+                now = KST.strftime(fmt)
+                timestamp.append(now[8:10])
+                embed = discord.Embed(title = "음성 채널 참여", description = "<#" + str(after.channel.id)+"> 채널에 "+str(member.name)+' 님이 참여하셨습니다.', color = 0x00ff00)
+                embed.add_field(name = "시간", value = str(now), inline=False)
+                await member.guild.system_channel.send(embed=embed)
+                try:
+                    if int(timestamp[-1]) - int(timestamp[-2]) != 0: # 날짜가 바뀌면 명단 초기화
+                        db_daily[str(server_id)].drop()
+                except IndexError:
+                    pass
+                entry = db_daily[str(server_id)].find_one({'id': str(member.id)})
+                if entry is None:
+                    db_daily[str(server_id)].insert_one({
+                        'id': str(member.id),
+                        'name' : member.name,
+                        'date' : datetime.utcnow()
+                    })
+                    await member.guild.system_channel.send(str(member.name) + " 님 "\
+                        + str(now[:10]) + " :white_check_mark: 출석체크 완료 (+100 Pt)")
+                    entry = db_point[str(server_id)].find_one({'id':str(member.id)})
+                    if entry is None:
+                        db_point[str(server_id)].insert_one({
+                            'id': str(member.id),
+                            'name': member.name,
+                            'points': 0
+                        })
+                    db_point[str(server_id)].update_one({'id': str(member.id)}, {'$inc': {'points':100}})
 
 
 async def setup(bot):
@@ -279,5 +306,6 @@ async def setup(bot):
         bot.tree.add_command(maincog.pimang)
         bot.tree.add_command(maincog.matching)
         bot.tree.add_command(maincog.matching2)
+        bot.tree.add_command(maincog.show_point)
     except app_commands.CommandAlreadyRegistered:
         pass
