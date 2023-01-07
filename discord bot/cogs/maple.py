@@ -435,12 +435,22 @@ class Maple(commands.Cog):
 
             await interaction.response.send_message(embed=embed, view=view)
 
+        async def protect_espera(interaction):
+            embed1 = discord.Embed(color=0xa2cd5a)
+            embed2 = discord.Embed(color=0xa2cd5a)
+            embed1.set_image(url="https://upload3.inven.co.kr/upload/2021/08/24/bbs/i13535684383.png?MW=800")
+            embed2.set_image(url="https://upload3.inven.co.kr/upload/2021/08/24/bbs/i14155987428.png?MW=800")
+            embed2.set_footer(text="출처 : https://www.inven.co.kr/board/maple/2304/28788")
+            embeds = [embed1, embed2]
+            await interaction.response.send_message(embeds=embeds)
+        
         embed = discord.Embed(title="메이플 편의기능", description="", color=0xFAE0D4)
         embed.add_field(name="직업뽑기  (🎲)", value="봇이 직업을 무작위로 뽑아줍니다. (링크/유니온 육성에 유용)", inline=False)
         embed.add_field(name="추옵  (\u2694)" ,value="무기의 추가옵션을 봅니다.", inline=False)
         embed.add_field(name="코강  (💎)" ,value="전직업 코어강화 정리", inline=False)
         embed.add_field(name="심볼  (❄)" ,value="심볼 강화 비용 계산", inline=False)
         embed.add_field(name="계산기  (🧮)" ,value="각종 계산 기능", inline=False)
+        embed.add_field(name="프로텍트 에스페라  (💣)" ,value="프로텍트 에스페라 공략", inline=False)
 
         view = discord.ui.View(timeout=10.0)
         button1 = discord.ui.Button(label="직업뽑기", emoji="🎲")
@@ -448,18 +458,21 @@ class Maple(commands.Cog):
         button3 = discord.ui.Button(label="코강", emoji="💎")
         button4 = discord.ui.Button(label="심볼", emoji="❄")
         button5 = discord.ui.Button(label="계산기", emoji="🧮")
+        button6 = discord.ui.Button(label="프로텍트 에스페라", emoji="💣")
 
         button1.callback = choose_job
         button2.callback = choo_op
         button3.callback = cogang
         button4.callback = symbol
         button5.callback = calc
+        button6.callback = protect_espera
         
         view.add_item(button1)
         view.add_item(button2)
         view.add_item(button3)
         view.add_item(button4)
         view.add_item(button5)
+        view.add_item(button6)
 
         await interaction.response.send_message(embed=embed, view=view)
 
@@ -844,7 +857,15 @@ class Maple(commands.Cog):
         
         await interaction.response.send_message(embed=embed, view=view)
         
-    
+    @app_commands.command(name="프로텍트", description="프로텍트 에스페라 공략을 확인합니다.")
+    async def protect_espera(self, interaction: discord.Interaction):
+        embed1 = discord.Embed(color=0xa2cd5a)
+        embed2 = discord.Embed(color=0xa2cd5a)
+        embed1.set_image(url="https://upload3.inven.co.kr/upload/2021/08/24/bbs/i13535684383.png?MW=800")
+        embed2.set_image(url="https://upload3.inven.co.kr/upload/2021/08/24/bbs/i14155987428.png?MW=800")
+        embed2.set_footer(text="출처 : https://www.inven.co.kr/board/maple/2304/28788")
+        embeds = [embed1, embed2]
+        await interaction.response.send_message(embeds=embeds)
 
 async def setup(bot):
     maple = Maple(bot)
