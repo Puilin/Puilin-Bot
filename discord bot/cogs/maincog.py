@@ -9,7 +9,6 @@ from discord import app_commands
 import os
 import pymongo
 
-global timestamp
 timestamp = []
             
 client = pymongo.MongoClient("your string here")
