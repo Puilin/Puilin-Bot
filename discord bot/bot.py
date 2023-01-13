@@ -1,8 +1,9 @@
 from discord.ext import commands
 import discord
 import asyncio
+import os
 
-token = "Your token here"
+token = os.environ.get("TOKEN")
 
 class PuilinBot(commands.Bot):
     def __init__(self):

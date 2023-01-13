@@ -6,7 +6,7 @@ import os
 import pymongo
 import random
 
-client = pymongo.MongoClient("your string here")
+client = pymongo.MongoClient(os.environ.get("DB_str"))
 db = client.point
 
 class Gambling(commands.Cog):

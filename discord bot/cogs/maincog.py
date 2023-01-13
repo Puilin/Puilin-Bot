@@ -11,7 +11,7 @@ import pymongo
 
 timestamp = []
             
-client = pymongo.MongoClient("your string here")
+client = pymongo.MongoClient(os.environ.get("DB_str"))
 db_point = client.point
 db_daily = client.daily
 

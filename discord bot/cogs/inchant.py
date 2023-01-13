@@ -21,7 +21,7 @@ def destroy(num):
     else:
         return (1 - probability(num)) * 0.5
 
-client = pymongo.MongoClient("your string here")
+client = pymongo.MongoClient(os.environ.get("DB_str"))
 db = client.inchant
 db_point = client.point
 
