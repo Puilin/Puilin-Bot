@@ -8,8 +8,6 @@ from pytz import timezone
 from discord import app_commands
 import os
 import pymongo
-
-timestamp = []
             
 client = pymongo.MongoClient(os.environ.get("DB_str"))
 db_point = client.point
@@ -267,21 +265,19 @@ class MainCog(commands.Cog):
                 fmt = "%Y-%m-%d %H:%M:%S %Z%z"
                 KST = datetime.now(timezone('Asia/Seoul'))
                 now = KST.strftime(fmt)
-                timestamp.append(now[8:10])
                 embed = discord.Embed(title = "음성 채널 참여", description = "<#" + str(after.channel.id)+"> 채널에 "+str(member.name)+' 님이 참여하셨습니다.', color = 0x00ff00)
                 embed.add_field(name = "시간", value = str(now), inline=False)
                 await member.guild.system_channel.send(embed=embed)
-                try:
-                    if int(timestamp[-1]) - int(timestamp[-2]) != 0: # 날짜가 바뀌면 명단 초기화
+                entry = db_daily[str(server_id)].find_one({'id': str(member.id)})
+                if entry is not None:
+                    if now[8:10] != entry['date'][8:10]:
                         db_daily[str(server_id)].drop()
-                except IndexError:
-                    pass
                 entry = db_daily[str(server_id)].find_one({'id': str(member.id)})
                 if entry is None:
                     db_daily[str(server_id)].insert_one({
                         'id': str(member.id),
                         'name' : member.name,
-                        'date' : datetime.utcnow()
+                        'date' : str(datetime.now(timezone('Asia/Seoul')))
                     })
                     await member.guild.system_channel.send(str(member.name) + " 님 "\
                         + str(now[:10]) + " :white_check_mark: 출석체크 완료 (+100 Pt)")
@@ -293,6 +289,7 @@ class MainCog(commands.Cog):
                             'points': 0
                         })
                     db_point[str(server_id)].update_one({'id': str(member.id)}, {'$inc': {'points':100}})
+                    
 
 
 async def setup(bot):
