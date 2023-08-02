@@ -39,11 +39,11 @@ class Inchant(commands.Cog):
         if entry is None:
             collection.insert_one({
                 'id': str(member.id),
-                'name': member.name,
+                'name': member.global_name,
                 'level': 0
             })
             entry = collection.find_one({'id': str(member.id)})
-        embed = discord.Embed(title="강화", description=f"{member.name} 🌟 {entry['level']} -> 🌟 {entry['level'] + 1}", color=0xCC723D)
+        embed = discord.Embed(title="강화", description=f"{member.global_name} 🌟 {entry['level']} -> 🌟 {entry['level'] + 1}", color=0xCC723D)
         if entry['level'] <= 15:
             embed.add_field(name="강화하시겠습니까? (100 Pt 소모)", value=f"성공확률 : {round(probability(entry['level']), 4) * 100} %\n실패(하락)확률 : {round(1-probability(entry['level']),4)*100} %", inline=False)
         else:
@@ -107,9 +107,9 @@ class Inchant(commands.Cog):
         entry = collection.find_one({'id': str(interaction.user.id)})
         embed = discord.Embed(title="강화단계 조회", description="", color=0xCC723D)
         if entry is None:
-            embed.add_field(name=f"{interaction.user.name}", value="아직 강화를 하지 않으셨네요! /강화 로 인챈트에 도전해보세요!", inline=False)
+            embed.add_field(name=f"{interaction.user.global_name}", value="아직 강화를 하지 않으셨네요! /강화 로 인챈트에 도전해보세요!", inline=False)
         else:
-            embed.add_field(name=f"{interaction.user.name}", value=f"🌟{entry['level']}", inline=False)
+            embed.add_field(name=f"{interaction.user.global_name}", value=f"🌟{entry['level']}", inline=False)
         await interaction.response.send_message(embed=embed, ephemeral=True)
         
 
