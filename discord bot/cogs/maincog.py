@@ -98,10 +98,10 @@ class MainCog(commands.Cog):
         entry = db_point[str(server_id)].find_one({'id':str(interaction.user.id)})
         embed = discord.Embed(title="포인트 조회", description="", color=0xCAA232)
         if entry is None:
-            embed.add_field(name=f"{interaction.user.global_name}", value="0 Pt")
+            embed.add_field(name=f"{interaction.user.display_name}", value="0 Pt")
             await interaction.response.send_message(embed=embed, ephemeral=True)
             return
-        embed.add_field(name=f"{interaction.user.global_name}", value=f"{entry['points']} Pt", inline=False)
+        embed.add_field(name=f"{interaction.user.display_name}", value=f"{entry['points']} Pt", inline=False)
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
     
@@ -144,8 +144,8 @@ class MainCog(commands.Cog):
                 output = []
                 printing = ""
                 for member in team:
-                    output.append(member.global_name)
-                    printing += member.global_name + "\n"
+                    output.append(member.display_name)
+                    printing += member.display_name + "\n"
                 embed.add_field(name="team " + str(index), value=printing)
                 index += 1
             await ctx.send(embed=embed)
@@ -169,7 +169,7 @@ class MainCog(commands.Cog):
             members = []
             async for i in reaction.users():
                 if (not i.bot):
-                    members.append(i.global_name)
+                    members.append(i.display_name)
             def check2(message):
                 return message.content.isdigit()
             await ctx.send("구성할 팀의 개수를 입력하세요.")
@@ -277,7 +277,7 @@ class MainCog(commands.Cog):
                 fmt = "%Y-%m-%d %H:%M:%S %Z%z"
                 KST = datetime.now(timezone('Asia/Seoul'))
                 now = KST.strftime(fmt)
-                embed = discord.Embed(title = "음성 채널 참여", description = "<#" + str(after.channel.id)+"> 채널에 "+str(member.global_name)+' 님이 참여하셨습니다.', color = 0x00ff00)
+                embed = discord.Embed(title = "음성 채널 참여", description = "<#" + str(after.channel.id)+"> 채널에 "+str(member.display_name)+' 님이 참여하셨습니다.', color = 0x00ff00)
                 embed.add_field(name = "시간", value = str(now), inline=False)
                 await member.guild.system_channel.send(embed=embed)
                 entry = db_daily[str(server_id)].find_one({'id': str(member.id)})
@@ -288,16 +288,16 @@ class MainCog(commands.Cog):
                 if entry is None:
                     db_daily[str(server_id)].insert_one({
                         'id': str(member.id),
-                        'name' : member.global_name,
+                        'name' : member.display_name,
                         'date' : str(datetime.now(timezone('Asia/Seoul')))
                     })
-                    await member.guild.system_channel.send(str(member.global_name) + " 님 "\
+                    await member.guild.system_channel.send(str(member.display_name) + " 님 "\
                         + str(now[:10]) + " :white_check_mark: 출석체크 완료 (+100 Pt)")
                     entry = db_point[str(server_id)].find_one({'id':str(member.id)})
                     if entry is None:
                         db_point[str(server_id)].insert_one({
                             'id': str(member.id),
-                            'name': member.global_name,
+                            'name': member.display_name,
                             'points': 0
                         })
                     db_point[str(server_id)].update_one({'id': str(member.id)}, {'$inc': {'points':100}})
