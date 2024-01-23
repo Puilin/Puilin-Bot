@@ -11,7 +11,7 @@ class PuilinBot(commands.Bot):
             command_prefix='/',
             intents=discord.Intents.all(),
             sync_command=True,
-            application_id=your_id
+            application_id=os.environ.get("APP_ID")
         )
         self.initial_extension = [
             "cogs.maincog",
@@ -37,7 +37,7 @@ class PuilinBot(commands.Bot):
         print("----------")
         print(len(bot.guilds), "개 서버에서 동작 중")
         print("==========")
-        game = discord.Game("퓨이린 봇 개발모드")
+        game = discord.Game("/명령어")
         await self.change_presence(status=discord.Status.online, activity=game)
 
 # Windows의 경우 event loop 정책 설정 변경
