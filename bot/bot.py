@@ -1,8 +1,10 @@
 from discord.ext import commands
+from dotenv import load_dotenv
 import discord
 import asyncio
 import os
 
+load_dotenv("../.env")
 token = os.environ.get("TOKEN")
 
 class PuilinBot(commands.Bot):
